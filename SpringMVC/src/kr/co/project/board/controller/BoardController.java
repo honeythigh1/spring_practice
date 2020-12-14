@@ -22,11 +22,20 @@ public class BoardController {
 	private BoardService service;
 
 	@RequestMapping(value = "/")
-	public ModelAndView hello(){	
+	public ModelAndView boardList(){	
 		ModelAndView mv = new ModelAndView();
-		List<BoardDto> list = service.getList();
+		
+		int totalCount = service.totalCount(); //게시물 총 개수
+		int countList = 10; //한 페이지에 보여줄 게시물 수
+		int totalPage = totalCount / countList;
+		System.out.println(totalPage);
+		if(totalCount > countList * totalPage)
+			totalPage++;
+		
+		List<BoardDto> list = service.selectAll();
 		mv.addObject("list", list);
 		mv.setViewName("boardPage/board");
+		
 		return mv;
 	}
 	
@@ -35,10 +44,10 @@ public class BoardController {
 		return new ModelAndView("boardPage/writer");
 	}
 	
-	@RequestMapping(value="/writer", method=RequestMethod.GET)
+	@RequestMapping(value="/writer")
 	public String insertBoard(@ModelAttribute("dto") BoardDto dto){
 		service.insertBoard(dto);
-		return "redirect:/boardList";
+		return "redirect:/";
 	}
 	
 	@RequestMapping(value="/detail")
@@ -63,7 +72,7 @@ public class BoardController {
 	@RequestMapping(value="/updateComplete")
 	public String updateOk(@ModelAttribute("dto") BoardDto dto) throws Exception {
 		service.updateBoard(dto);
-		return "redirect:/boardList";
+		return "redirect:/";
 	}
 	
 }
