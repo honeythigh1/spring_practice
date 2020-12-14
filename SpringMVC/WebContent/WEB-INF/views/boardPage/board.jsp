@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,7 +26,10 @@
 					<td><a href="detail?bno=${item.bno}">${item.title }</a></td>
 					<td>${item.content}</td>
 					<td>${item.writer}</td>
-					<td>${item.regDate}</td>
+					<td>
+						<fmt:parseDate value="${item.regDate}" var="regDate" pattern="yyyy-MM-dd"/>
+						<fmt:formatDate value="${regDate}" pattern="yyyy.MM.dd" />
+					</td>
 				</tr>
 			</c:forEach>
 		</tbody>
