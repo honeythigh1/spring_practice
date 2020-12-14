@@ -4,13 +4,36 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
     
 <mapper namespace="kr.co.project.board">
-	<select id="selectAll" resultType="boardDto">
-		select * from tbl_board
+	<select id="totalCount" resultType="Integer">
+		SELECT count(*) 
+		  FROM tbl_board
+	</select>
+	
+	<select id="selectAll" resultType="BoardDto">
+		SELECT bno
+		     , title
+		     , writer
+		     , content
+		     , regdate
+          FROM tbl_board
 	</select>
 	
 	<select id="selectOne" resultType="boardDto" parameterType="boardDto">
 		select bno, title, writer, content from tbl_board where bno = #{bno}
 	</select>
+	
+		<insert id="insertBoard" parameterType="boardDto">
+		insert into tbl_board values(#{bno},#{title},#{content},#{writer},SYSDATE())
+	</insert>
+	
+	<update id="updateBoard" parameterType="boardDto">
+		update tbl_board set title=#{title}, content=#{content}, writer=#{writer} where bno=#{bno}
+	</update>
+	
+	<delete id="deleteBoard" parameterType="boardDto">
+		delete tbl_board where bno = #{bno}
+	</delete>
+	
 	
 </mapper>
 
