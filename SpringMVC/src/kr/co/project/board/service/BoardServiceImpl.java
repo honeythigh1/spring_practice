@@ -23,7 +23,7 @@ public class BoardServiceImpl implements BoardService{
 
 
 	@Override
-	public List<BoardDto> getList(){
+	public List<BoardDto> selectAll(){
 		// TODO Auto-generated method stub
 		return dao.selectAll();
 	}
@@ -46,6 +46,13 @@ public class BoardServiceImpl implements BoardService{
 	public void deleteBoard(BoardDto dto) {
 		dao.deleteBoard(dto);
 		
+	}
+
+
+	@Override
+	public int totalCount() {
+		// TODO Auto-generated method stub
+		return dao.totalCount();
 	}
 
 }
