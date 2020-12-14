@@ -43,5 +43,10 @@ public class BoardDaoImpl implements BoardDao {
 		
 	}
 
+	@Override
+	public int totalCount() {
+		return session.selectOne(namespace + "totalCount");
+	}
+
 
 }
