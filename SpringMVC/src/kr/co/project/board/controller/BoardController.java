@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.project.board.dto.BoardDto;
@@ -20,20 +19,44 @@ public class BoardController {
 	
 	@Autowired
 	private BoardService service;
-
+	
 	@RequestMapping(value = "/")
-	public ModelAndView boardList(){	
+	public String hello() {
+		return "redirect:/boardList";
+	}
+
+	@RequestMapping(value = "/boardList")
+	public ModelAndView boardList(HttpServletRequest request){	
 		ModelAndView mv = new ModelAndView();
 		
+		String pgae = request.getParameter("currentPage");
+		int currentPage = Integer.parseInt(pgae);
+		System.out.println("현재 페이지 번호 : "+ currentPage);
 		int totalCount = service.totalCount(); //게시물 총 개수
 		int countList = 10; //한 페이지에 보여줄 게시물 수
-		int totalPage = totalCount / countList;
-		System.out.println(totalPage);
-		if(totalCount > countList * totalPage)
+		int totalPage = totalCount / countList; // 페이지 개수
+		if(totalCount % countList > 0)
 			totalPage++;
 		
+		if(totalPage < currentPage)
+			currentPage = totalPage;
+		
+		int startPage = ((currentPage - 1) / countList) * countList + 1;
+		int endPage = startPage + countList - 1;
+		
+		if(endPage > totalPage)
+			endPage = totalPage;
+		
+		System.out.println("startPage : " + startPage);
+		System.out.println("endPage : " + endPage);
 		List<BoardDto> list = service.selectAll();
 		mv.addObject("list", list);
+		mv.addObject("totalPage", totalPage);
+		mv.addObject("totalCount", totalCount);
+		mv.addObject("totalPage", totalPage);
+		mv.addObject("currentPage", currentPage);
+		mv.addObject("startPage", startPage);
+		mv.addObject("endPage", endPage);
 		mv.setViewName("boardPage/board");
 		
 		return mv;
@@ -47,7 +70,7 @@ public class BoardController {
 	@RequestMapping(value="/writer")
 	public String insertBoard(@ModelAttribute("dto") BoardDto dto){
 		service.insertBoard(dto);
-		return "redirect:/";
+		return "redirect:/boardList";
 	}
 	
 	@RequestMapping(value="/detail")
@@ -72,7 +95,7 @@ public class BoardController {
 	@RequestMapping(value="/updateComplete")
 	public String updateOk(@ModelAttribute("dto") BoardDto dto) throws Exception {
 		service.updateBoard(dto);
-		return "redirect:/";
+		return "redirect:/boardList";
 	}
 	
 }
