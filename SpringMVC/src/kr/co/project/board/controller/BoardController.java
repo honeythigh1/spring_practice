@@ -1,6 +1,8 @@
 package kr.co.project.board.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.project.board.dto.BoardDto;
@@ -28,9 +31,13 @@ public class BoardController {
 	@RequestMapping(value = "/boardList")
 	public ModelAndView boardList(HttpServletRequest request){	
 		ModelAndView mv = new ModelAndView();
+	
+		String page = "";
+		if(page.equals("")) {
+			page = request.getParameter("currentPage");
+		}
+		int	currentPage = Integer.parseInt(page);
 		
-		String pgae = request.getParameter("currentPage");
-		int currentPage = Integer.parseInt(pgae);
 		System.out.println("현재 페이지 번호 : "+ currentPage);
 		int totalCount = service.totalCount(); //게시물 총 개수
 		int countList = 10; //한 페이지에 보여줄 게시물 수
@@ -38,10 +45,12 @@ public class BoardController {
 		if(totalCount % countList > 0)
 			totalPage++;
 		
-		if(totalPage < currentPage)
+		//현재 페이지 number가 페이지 개수보다 크다면
+		if(totalPage < currentPage) {
 			currentPage = totalPage;
+		}
 		
-		int startPage = ((currentPage - 1) / countList) * countList + 1;
+		int startPage = (((currentPage - 1) / countList) * countList) + 1;
 		int endPage = startPage + countList - 1;
 		
 		if(endPage > totalPage)
@@ -49,7 +58,7 @@ public class BoardController {
 		
 		System.out.println("startPage : " + startPage);
 		System.out.println("endPage : " + endPage);
-		List<BoardDto> list = service.selectAll();
+		List<BoardDto> list = service.selectAll(currentPage);
 		mv.addObject("list", list);
 		mv.addObject("totalPage", totalPage);
 		mv.addObject("totalCount", totalCount);
