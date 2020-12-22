@@ -9,13 +9,19 @@
 		  FROM tbl_board
 	</select>
 	
-	<select id="selectAll" resultType="BoardDto">
+	<select id="selectAll" resultType="boardDto" parameterType="boardDto">
 		SELECT bno
 		     , title
 		     , writer
 		     , content
 		     , regdate
           FROM tbl_board
+           ORDER BY bno 
+             , title
+		     , writer
+		     , content
+		     , regdate DESC
+            LIMIT #{currentNum} , 10
 	</select>
 	
 	<select id="selectOne" resultType="boardDto" parameterType="boardDto">
