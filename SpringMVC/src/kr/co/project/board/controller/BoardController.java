@@ -29,14 +29,10 @@ public class BoardController {
 	}
 
 	@RequestMapping(value = "/boardList")
-	public ModelAndView boardList(HttpServletRequest request){	
+	public ModelAndView boardList(@RequestParam(value="currentPage" ,defaultValue = "1")int currentPageNum, HttpServletRequest request){	
 		ModelAndView mv = new ModelAndView();
-	
-		String page = "";
-		if(page.equals("")) {
-			page = request.getParameter("currentPage");
-		}
-		int	currentPage = Integer.parseInt(page);
+
+		int currentPage = currentPageNum;
 		
 		System.out.println("현재 페이지 번호 : "+ currentPage);
 		int totalCount = service.totalCount(); //게시물 총 개수
